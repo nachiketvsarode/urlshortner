@@ -62,8 +62,8 @@ func getURL(id string) (URL, error) {
 	}
 	return url, nil
 }
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello World")
+func RootPageURL(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Hello, world!")
 }
 
 func ShortURLHandler(w http.ResponseWriter, r *http.Request) {
@@ -89,7 +89,7 @@ func ShortURLHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func redirectURLHandler(w http.ResponseWriter, r *http.Request) {
-	id := r.URL.Path()[len("/redirect"):]
+	id := r.URL.Path[len("/redirect"):]
 	url, err := getURL(id)
 	if err != nil {
 		http.Error(w, "Invalid request", http.StatusNotFound)
@@ -104,8 +104,9 @@ func main() {
 		generateShortURL(OriginalURL)
 	*/
 	// Register the handler function to handle all request to the roor URL ("/")
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/", RootPageURL)
 	http.HandleFunc("/shorten", ShortURLHandler)
+	http.HandleFunc("/redirect/", redirectURLHandler)
 
 	// Start the HTTP Server on port 8080
 	fmt.Println("Starting server on port 3000.....")
