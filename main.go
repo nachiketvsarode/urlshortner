@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"net/http"
 	"time"
 )
 
@@ -65,5 +66,12 @@ func main() {
 	fmt.Println("Starting URL shortner......")
 	OriginalURL := "https://github.com/nachiketvsarode"
 	generateShortURL(OriginalURL)
+
+	// Start the HTTP Server on port 8080
+	fmt.Println("Starting server on port 3000.....")
+	err := http.ListenAndServe(":3000", nil)
+	if err != nil {
+		fmt.Println("Error on starting server")
+	}
 
 }
