@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -62,16 +63,40 @@ func getURL(id string) (URL, error) {
 	return url, nil
 }
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("GET method")
+	fmt.Fprintf(w, "Hello World")
+}
+
+func ShortURLHandler(w http.ResponseWriter, r *http.Request) {
+	var data struct {
+		URL string `json:"url"`
+	}
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	shortURL_ := createURL(data.URL)
+	//fmt.Fprintf(w, shortURL)
+
+	response := struct {
+		ShortURL string `json:"short_url"`
+	}{ShortURL: shortURL_}
+
+	w.Header().Set("Content-type", "application/json")
+	json.NewEncoder(w).Encode(response)
+
 }
 
 func main() {
-	fmt.Println("Starting URL shortner......")
-	OriginalURL := "https://github.com/nachiketvsarode"
-	generateShortURL(OriginalURL)
-
+	/*
+		fmt.Println("Starting URL shortner......")
+		OriginalURL := "https://github.com/nachiketvsarode"
+		generateShortURL(OriginalURL)
+	*/
 	// Register the handler function to handle all request to the roor URL ("/")
 	http.HandleFunc("/", handler)
+	http.HandleFunc("/shorten", ShortURLHandler)
 
 	// Start the HTTP Server on port 8080
 	fmt.Println("Starting server on port 3000.....")
