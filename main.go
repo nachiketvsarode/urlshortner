@@ -61,11 +61,17 @@ func getURL(id string) (URL, error) {
 	}
 	return url, nil
 }
+func handler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("GET method")
+}
 
 func main() {
 	fmt.Println("Starting URL shortner......")
 	OriginalURL := "https://github.com/nachiketvsarode"
 	generateShortURL(OriginalURL)
+
+	// Register the handler function to handle all request to the roor URL ("/")
+	http.HandleFunc("/", handler)
 
 	// Start the HTTP Server on port 8080
 	fmt.Println("Starting server on port 3000.....")
