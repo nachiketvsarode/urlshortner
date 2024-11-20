@@ -88,6 +88,15 @@ func ShortURLHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func redirectURLHandler(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Path()[len("/redirect"):]
+	url, err := getURL(id)
+	if err != nil {
+		http.Error(w, "Invalid request", http.StatusNotFound)
+	}
+	http.Redirect(w, r, url.OriginalURL, http.StatusFound)
+}
+
 func main() {
 	/*
 		fmt.Println("Starting URL shortner......")
